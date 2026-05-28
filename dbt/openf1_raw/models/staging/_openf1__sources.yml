@@ -6,3 +6,4 @@ sources:
     schema: openf1_raw
     tables:
       - name: raw_meetings
+      - name: raw_sessions

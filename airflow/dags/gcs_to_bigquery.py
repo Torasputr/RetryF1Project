@@ -6,10 +6,12 @@ import os
 GCS_BUCKET = os.environ["GCS_BUCKET"]
 GCS_MEDAL_FETCH = os.environ["GCS_MEDAL_FETCH"]
 YEAR = os.environ["YEAR"]
-SOURCE = f"{GCS_MEDAL_FETCH}/meetings/{YEAR}.parquet"
+MEETINGS_SOURCE = f"{GCS_MEDAL_FETCH}/meetings/{YEAR}.parquet"
+SESSIONS_SOURCE = f"{GCS_MEDAL_FETCH}/sessions/{YEAR}.parquet"
 PROJECT = os.environ["PROJECT"]
 BQ_RAW_DATASET = os.environ["BQ_RAW_DATASET"]
-DESTINATION = f"{PROJECT}.{BQ_RAW_DATASET}.raw_meetings"
+MEETINGS_DESTINATION = f"{PROJECT}.{BQ_RAW_DATASET}.raw_meetings"
+SESSIONS_DESTINATION = f"{PROJECT}.{BQ_RAW_DATASET}.raw_sessions"
 
 with DAG(
     dag_id="openf1_bq_load_meetings",
@@ -21,10 +23,24 @@ with DAG(
         task_id="load_raw_meetings_parquet",
         gcp_conn_id="google_cloud_default",  # Airflow Connection with your GCP creds
         bucket=GCS_BUCKET,
-        source_objects=[SOURCE],  # object path inside bucket
-        destination_project_dataset_table=DESTINATION,
+        source_objects=[MEETINGS_SOURCE],  # object path inside bucket
+        destination_project_dataset_table=MEETINGS_DESTINATION,
         source_format="PARQUET",
         write_disposition="WRITE_TRUNCATE",
         create_disposition="CREATE_IF_NEEDED",
         autodetect=True,
     )
+
+    load_raw_sessions = GCSToBigQueryOperator(
+        task_id="load_raw_sessions_parquet",
+        gcp_conn_id="google_cloud_default",
+        bucket=GCS_BUCKET,
+        source_objects=[SESSIONS_SOURCE],
+        destination_project_dataset_table=SESSIONS_DESTINATION,
+        source_format="PARQUET",
+        write_disposition="WRITE_TRUNCATE",
+        create_disposition="CREATE_IF_NEEDED",
+        autodetect=True
+    )
+
+    [load_raw_meetings, load_raw_sessions]

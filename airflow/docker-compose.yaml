@@ -103,7 +103,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
-      retries: 5
+      retries: 5t
       start_period: 5s
     restart: always
 
