@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: openf1_raw
+    database: trial-f1
+    schema: openf1_raw
+    tables:
+      - name: raw_meetings

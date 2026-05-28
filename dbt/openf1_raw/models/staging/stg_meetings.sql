@@ -1,0 +1,21 @@
+SELECT
+    CAST(meeting_key AS INT64) AS meeting_key,
+    TRIM(meeting_name) AS meeting_name,
+    TRIM(meeting_official_name) AS meeting_official_name,
+    TRIM(location) AS location,
+    CAST(country_key AS INT64) AS country_key,
+    TRIM(country_code) AS country_code,
+    TRIM(country_name) AS country_name,
+    TRIM(country_flag) AS country_flag,
+    CAST(circuit_key AS INT64) AS circuit_key,
+    TRIM(circuit_short_name) AS circuit_short_name,
+    TRIM(circuit_type) AS circuit_type,
+    TRIM(circuit_info_url) AS circuit_info_url,
+    TRIM(circuit_image) AS circuit_image,
+    TRIM(gmt_offset) AS gmt_offset,
+    CAST(date_start AS TIMESTAMP) AS date_start,
+    CAST(date_end AS TIMESTAMP) AS date_end,
+    CAST(year AS INT64) AS year,
+    CAST(is_cancelled AS BOOL) AS is_cancelled,
+    CAST(ingested_at AS TIMESTAMP) AS ingested_at
+FROM {{ source('openf1_raw', 'raw_meetings') }}

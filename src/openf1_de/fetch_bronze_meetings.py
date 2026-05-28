@@ -29,7 +29,7 @@ def fetch_data_from_api(url):
     return df
 
 
-def upload_to_parquet(df, bucket, path, name, year):
+def upload_to_parquet(df, bucket, path, year, dir):
     buf = BytesIO()
     df.to_parquet(buf, index=False)
     buf.seek(0)
@@ -41,6 +41,9 @@ def upload_to_parquet(df, bucket, path, name, year):
         content_type="application/vnd.apache.parquet",
         size=len(payload),
     )
+    
+    # df.to_parquet(dir, index=False)
+
 
 
 def main():
@@ -51,7 +54,8 @@ def main():
     URL = f"{BASE_URL}/meetings?year={YEAR}"
     GCS_BUCKET = os.getenv("GCS_BUCKET")
     GCS_MEDAL_PUSH = os.getenv("GCS_MEDAL_PUSH")
-    BLOB_PATH = f"{GCS_MEDAL_PUSH}/season={YEAR}/meetings.parquet"
+    BLOB_PATH = f"{GCS_MEDAL_PUSH}/meetings/{YEAR}.parquet"
+    DIR_PATH = f"../../data/bronze/meetings/{YEAR}.parquet"
 
     _configure_logging()
     logger.info(f"Start Fetching")
@@ -63,7 +67,7 @@ def main():
     bucket = client.bucket(GCS_BUCKET)
 
     logger.info(f"Uploading meetings_df to GCP")
-    upload_to_parquet(meetings_df, bucket, BLOB_PATH, "meetings", YEAR)
+    upload_to_parquet(meetings_df, bucket, BLOB_PATH, YEAR, DIR_PATH)
 
 if __name__ == "__main__":
     main()
