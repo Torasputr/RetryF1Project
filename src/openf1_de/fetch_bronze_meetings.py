@@ -9,6 +9,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+load_dotenv()
+
+BASE_URL = os.getenv("BASE_URL", "").strip("/")
+YEAR = int(os.getenv("YEAR", ""))
+MEETING_URL = f"{BASE_URL}/meetings?year={YEAR}"
+SESSION_URL = f"{BASE_URL}/sessions?year={YEAR}"
+GCS_BUCKET = os.getenv("GCS_BUCKET")
+GCS_MEDAL_PUSH = os.getenv("GCS_MEDAL_PUSH")
+MEETINGS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/meetings/{YEAR}.parquet"
+SESSIONS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/sessions/{YEAR}.parquet"
+MEETINGS_DIR_PATH = f"../../data/bronze/meetings/{YEAR}.parquet"
+SESSIONS_DIR_PATH = f"../../data/bronze/sessions/{YEAR}.parquet"
+
 
 def _configure_logging():
     logging.basicConfig(
@@ -42,23 +55,15 @@ def upload_to_parquet(df, bucket, path, year, dir):
         size=len(payload),
     )
     
-    # df.to_parquet(dir, index=False)
+    try:
+        df.to_parquet(dir, index=False)
+    except Exception as e:
+        logger.info("Without local save")
 
 
 
 def main():
-    load_dotenv()
 
-    BASE_URL = os.getenv("BASE_URL", "").strip("/")
-    YEAR = int(os.getenv("YEAR", ""))
-    MEETING_URL = f"{BASE_URL}/meetings?year={YEAR}"
-    SESSION_URL = f"{BASE_URL}/sessions?year={YEAR}"
-    GCS_BUCKET = os.getenv("GCS_BUCKET")
-    GCS_MEDAL_PUSH = os.getenv("GCS_MEDAL_PUSH")
-    MEETINGS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/meetings/{YEAR}.parquet"
-    SESSIONS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/sessions/{YEAR}.parquet"
-    MEETINGS_DIR_PATH = f"../../data/bronze/meetings/{YEAR}.parquet"
-    SESSIONS_DIR_PATH = f"../../data/bronze/sessions/{YEAR}.parquet"
 
     _configure_logging()
     logger.info(f"Start Fetching")

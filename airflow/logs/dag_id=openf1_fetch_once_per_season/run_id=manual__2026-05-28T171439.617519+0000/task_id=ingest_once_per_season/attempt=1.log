@@ -1,0 +1,16 @@
+{"timestamp":"2026-05-28T17:14:39.901288Z","level":"info","event":"DAG bundles loaded: dags-folder","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager","filename":"manager.py","lineno":209}
+{"timestamp":"2026-05-28T17:14:39.903378Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/openf1_pipeline.py","logger":"airflow.dag_processing.dagbag.BundleDagBag","filename":"dagbag.py","lineno":469}
+{"timestamp":"2026-05-28T17:14:40.421354Z","level":"warning","event":"The `airflow.operators.python.PythonOperator` attribute is deprecated. Please use `'airflow.providers.standard.operators.python.PythonOperator'`.","category":"UserWarning","filename":"/opt/airflow/dags/openf1_pipeline.py","lineno":3,"logger":"py.warnings"}
+{"timestamp":"2026-05-28T17:14:40.442353Z","level":"info","event":"Start Fetching","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":69}
+{"timestamp":"2026-05-28T17:14:40.442518Z","level":"info","event":"Fetching Meetings","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":70}
+{"timestamp":"2026-05-28T17:14:40.442587Z","level":"info","event":"URL: https://api.openf1.org/v1/meetings?year=2026","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":35}
+{"timestamp":"2026-05-28T17:14:41.166445Z","level":"info","event":"Adding timestamp column","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":40}
+{"timestamp":"2026-05-28T17:14:41.167809Z","level":"info","event":"Fetching Sessions","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":72}
+{"timestamp":"2026-05-28T17:14:41.167953Z","level":"info","event":"URL: https://api.openf1.org/v1/sessions?year=2026","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":35}
+{"timestamp":"2026-05-28T17:14:42.031517Z","level":"info","event":"Adding timestamp column","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":40}
+{"timestamp":"2026-05-28T17:14:42.032342Z","level":"info","event":"Init GCP Storage","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":76}
+{"timestamp":"2026-05-28T17:14:42.110605Z","level":"info","event":"Uploading meetings_df to GCP","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":80}
+{"timestamp":"2026-05-28T17:14:42.688642Z","level":"info","event":"Without local save","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":61}
+{"timestamp":"2026-05-28T17:14:42.688919Z","level":"info","event":"Uploading sessions_df to GCP","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":82}
+{"timestamp":"2026-05-28T17:14:43.025169Z","level":"info","event":"Without local save","logger":"openf1_de.fetch_bronze_meetings","filename":"fetch_bronze_meetings.py","lineno":61}
+{"timestamp":"2026-05-28T17:14:43.025910Z","level":"info","event":"Done. Returned value was: None","logger":"airflow.task.operators.airflow.providers.standard.operators.python.PythonOperator","filename":"python.py","lineno":229}
