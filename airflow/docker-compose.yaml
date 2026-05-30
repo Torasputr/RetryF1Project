@@ -71,12 +71,13 @@ x-airflow-common: &airflow-common
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    _PIP_ADDITIONAL_REQUIREMENTS: "dbt-bigquery==1.11.1"
     # The following line can be used to set a custom config file, stored in the local config folder
     AIRFLOW_CONFIG: "/opt/airflow/config/airflow.cfg"
     PYTHONPATH: "/opt/airflow/src"
     GOOGLE_APPLICATION_CREDENTIALS: "/opt/airflow/secrets/gcp-sa.json"
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: "google-cloud-platform://?extra__google_cloud_platform__key_path=/opt/airflow/secrets/gcp-sa.json"
+    DBT_PROFILES_DIR: "/opt/airflow/config"
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
@@ -84,6 +85,8 @@ x-airflow-common: &airflow-common
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - "../src:/opt/airflow/src"
     - "../secrets/gcp-sa.json:/opt/airflow/secrets/gcp-sa.json:ro"
+    - "../dbt/openf1_raw:/opt/airflow/dbt/openf1_raw"
+    - "./config/profiles.yml:/opt/airflow/dbt/profiles.yml:ro"
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on: &airflow-common-depends-on
     redis:
@@ -103,7 +106,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
-      retries: 5t
+      retries: 5
       start_period: 5s
     restart: always
 

@@ -17,5 +17,5 @@ SELECT
     CAST(date_end AS TIMESTAMP) AS date_end,
     CAST(year AS INT64) AS year,
     CAST(is_cancelled AS BOOL) AS is_cancelled,
-    CAST(ingested_at AS TIMESTAMP) AS ingested_at
+    CURRENT_TIMESTAMP() as ingested_at
 FROM {{ source('openf1_raw', 'raw_meetings') }}

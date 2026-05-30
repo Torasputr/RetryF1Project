@@ -7,3 +7,4 @@ sources:
     tables:
       - name: raw_meetings
       - name: raw_sessions
+      - name: raw_drivers

@@ -8,10 +8,12 @@ GCS_MEDAL_FETCH = os.environ["GCS_MEDAL_FETCH"]
 YEAR = os.environ["YEAR"]
 MEETINGS_SOURCE = f"{GCS_MEDAL_FETCH}/meetings/{YEAR}.parquet"
 SESSIONS_SOURCE = f"{GCS_MEDAL_FETCH}/sessions/{YEAR}.parquet"
+DRIVERS_SOURCE = f"{GCS_MEDAL_FETCH}/drivers/{YEAR}.parquet"
 PROJECT = os.environ["PROJECT"]
 BQ_RAW_DATASET = os.environ["BQ_RAW_DATASET"]
 MEETINGS_DESTINATION = f"{PROJECT}.{BQ_RAW_DATASET}.raw_meetings"
 SESSIONS_DESTINATION = f"{PROJECT}.{BQ_RAW_DATASET}.raw_sessions"
+DRIVERS_DESTINATION = f"{PROJECT}.{BQ_RAW_DATASET}.raw_drivers"
 
 with DAG(
     dag_id="openf1_bq_load_meetings",
@@ -43,4 +45,16 @@ with DAG(
         autodetect=True
     )
 
-    [load_raw_meetings, load_raw_sessions]
+    load_raw_drivers = GCSToBigQueryOperator(
+        task_id="load_raw_drivers_parquet",
+        gcp_conn_id="google_cloud_default",
+        bucket=GCS_BUCKET,
+        source_objects=[DRIVERS_SOURCE],
+        destination_project_dataset_table=DRIVERS_DESTINATION,
+        source_format="PARQUET",
+        write_disposition="WRITE_TRUNCATE",
+        create_disposition="CREATE_IF_NEEDED",
+        autodetect=True
+    )
+
+    [load_raw_meetings, load_raw_sessions, load_raw_drivers]
