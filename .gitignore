@@ -2,3 +2,4 @@
 data
 secrets
 airflow/config/profiles.yml
+airflow/.env
