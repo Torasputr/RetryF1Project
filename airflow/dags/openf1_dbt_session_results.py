@@ -15,6 +15,7 @@ GCS_PUSH_BUCKET = os.environ.get("GCS_PUSH_BUCKET").strip()
 YEAR = int(os.environ.get("YEAR"))
 SR_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/race_{YEAR}_*.json"
 SRQ_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/quali_{YEAR}_*.json"
+SRFP_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/fp_{YEAR}_*.json"
 DS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/driver_standings/{YEAR}_*.json"
 CS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/constructor_standings/{YEAR}_*.json"
 
@@ -35,7 +36,7 @@ with DAG(
         task_id="dbt_run_session_results",
         bash_command=(
             f"cd {DBT_PROJECT_DIR} && "
-            f"dbt run --select stg_session_results_race stg_driver_standings stg_session_results_qualifying " 
+            f"dbt run --select stg_session_results_race stg_driver_standings stg_session_results_qualifying stg_session_results_fp " 
             f"--profiles-dir {DBT_PROFILES_DIR} "
         ),
     )
@@ -44,7 +45,7 @@ with DAG(
         task_id="dbt_run_marts_srs",
         bash_command=(
             f"cd {DBT_PROJECT_DIR} && "
-            f"dbt run --select mart_session_results_race mart_drivers mart_constructor_standings mart_session_results_quali --profiles-dir {DBT_PROFILES_DIR} "
+            f"dbt run --select mart_session_results_race mart_drivers mart_constructor_standings mart_session_results_quali mart_session_results_fp --profiles-dir {DBT_PROFILES_DIR} "
         ),
     )
 
@@ -80,4 +81,12 @@ with DAG(
         export_format="NEWLINE_DELIMITED_JSON",
     )
 
-    dbt_run_staging >> dbt_run_marts >> [export_mart_srs_race, export_mart_dss_race, export_mart_css_race, export_mart_srqs_race]
+    export_mart_srfps_race = BigQueryToGCSOperator(
+        task_id="export_mart_srfp_to_gcs",
+        gcp_conn_id="google_cloud_default",
+        source_project_dataset_table=f"{MART_LOCATION}.mart_session_results_fp",
+        destination_cloud_storage_uris=[SRFP_DESTINATION],
+        export_format="NEWLINE_DELIMITED_JSON",
+    )
+
+    dbt_run_staging >> dbt_run_marts >> [export_mart_srs_race, export_mart_dss_race, export_mart_css_race, export_mart_srqs_race, export_mart_srfps_race]
