@@ -78,18 +78,18 @@ def main():
     ]
 
     logger.info(f"Fetching the Session Results")
-    cache_path = Path("session_key_cache.json")
-    if cache_path.exists():
-        seen_session_keys = set(json.loads(cache_path.read_text()))
-    else:
-        seen_session_keys = set()
+    # cache_path = Path("session_key_cache.json")
+    # if cache_path.exists():
+    #     seen_session_keys = set(json.loads(cache_path.read_text()))
+    # else:
+    #     seen_session_keys = set()
     
     frames = []
     for s in df_used["session_key"]:
         s = int(s)
-        if s in seen_session_keys:
-            print(f"Skip cached session_key: {s}")
-            continue
+        # if s in seen_session_keys:
+        #     print(f"Skip cached session_key: {s}")
+        #     continue
         url = f"{URL}{s}"
         logger.info(f"Fetching for url: {url}")
 
