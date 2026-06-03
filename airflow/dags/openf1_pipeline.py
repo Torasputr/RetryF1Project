@@ -8,6 +8,7 @@ with DAG(
     start_date=datetime(2026, 1, 1),
     schedule="@daily",
     catchup=False,
+    tags={"1"}
 ) as dag:
     ingest = PythonOperator(
         task_id="ingest_once_per_season",

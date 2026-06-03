@@ -1,14 +1,17 @@
 SELECT 
-    driver_number,
-    broadcast_name,
-    full_name,
-    name_acronym,
-    team_name,
-    team_colour, 
-    first_name,
-    last_name,
-    headshot_url,
-    country_code,
-    year,
+    d.driver_number,
+    d.broadcast_name,
+    d.full_name,
+    d.name_acronym,
+    d.team_name,
+    d.team_colour, 
+    d.first_name,
+    d.last_name,
+    d.headshot_url,
+    d.country_code,
+    d.year,
+    ds.total_points,
     CURRENT_TIMESTAMP() AS ingested_at
-FROM {{ ref('stg_drivers') }}
+FROM {{ ref('stg_drivers') }} AS d
+LEFT JOIN {{ ref('stg_driver_standings')}} AS ds
+    ON d.driver_number = ds.driver_number

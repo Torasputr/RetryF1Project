@@ -16,12 +16,13 @@ with DAG(
         "retries": 2,
         "retry_delay": timedelta(minutes=5)
     },
-    tags=['openf1', 'dbt', 'staging']
+    tags=['3', 'openf1', 'dbt', 'staging']
 ) as dag:
     dbt_run_staging = BashOperator(
         task_id="dbt_run_staging",
         bash_command=(
             f"cd {DBT_PROJECT_DIR} && "
-            f"dbt run --select staging --profiles-dir {DBT_PROFILES_DIR}"
+            f"dbt run --select staging --exclude stg_session_results_race" 
+            f"--profiles-dir {DBT_PROFILES_DIR}"
         ),
     )

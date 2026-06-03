@@ -8,3 +8,4 @@ sources:
       - name: raw_meetings
       - name: raw_sessions
       - name: raw_drivers
+      - name: raw_session_results

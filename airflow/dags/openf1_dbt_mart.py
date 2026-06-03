@@ -25,7 +25,7 @@ with DAG(
         "retries": 2,
         "retry_delay": timedelta(minutes=5)
     },
-    tags=['openf1', 'dbt', 'marts']
+    tags=['4', 'openf1', 'dbt', 'marts']
 ) as dag:
     dbt_run_marts = BashOperator(
         task_id="dbt_run_marts",
