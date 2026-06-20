@@ -8,7 +8,7 @@ parsed AS (
     SELECT
         *,
         SPLIT(
-            REGEXP_REPLACE(TRIM(duration), r'^\[|\]$', ''),
+            REGEXP_REPLACE(TRIM(CAST(duration AS STRING)), r'^\[|\]$', ''),
             ','
         ) AS duration_parts
     FROM base
@@ -27,10 +27,9 @@ with_quarters AS (
         SAFE_CAST(dnf AS BOOL) AS dnf,
         SAFE_CAST(dns AS BOOL) AS dns,
         SAFE_CAST(dsq AS BOOL) AS dsq,
-        TRIM(gap_to_leader) AS gap_to_leader,
-        duration AS duration_raw,
+        TRIM(CAST(gap_to_leader AS STRING)) AS gap_to_leader,
+        CAST(duration AS STRING) AS duration_raw,
         SAFE_CAST(position AS INT64) AS position,
-        SAFE_CAST(points AS INT64) AS points,
 
         CASE
             WHEN duration IS NULL THEN NULL
@@ -98,6 +97,5 @@ SELECT
     q1,
     q2,
     q3,
-    best_lap_time,
-    points
+    best_lap_time
 FROM with_quarters

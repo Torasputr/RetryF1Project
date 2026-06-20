@@ -22,7 +22,7 @@ with DAG(
         task_id="dbt_run_staging",
         bash_command=(
             f"cd {DBT_PROJECT_DIR} && "
-            f"dbt run --select staging --exclude stg_session_results_race" 
+            f"dbt run --select staging --exclude stg_session_results_race " 
             f"--profiles-dir {DBT_PROFILES_DIR}"
         ),
     )

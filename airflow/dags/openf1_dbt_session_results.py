@@ -13,11 +13,11 @@ DATASET = os.environ.get("DATASET").strip()
 MART_LOCATION = f"{PROJECT}.{DATASET}"
 GCS_PUSH_BUCKET = os.environ.get("GCS_PUSH_BUCKET").strip()
 YEAR = int(os.environ.get("YEAR"))
-SR_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/race_{YEAR}_*.json"
-SRQ_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/quali_{YEAR}_*.json"
-SRFP_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/fp_{YEAR}_*.json"
-DS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/driver_standings/{YEAR}_*.json"
-CS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/constructor_standings/{YEAR}_*.json"
+SR_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/race_{YEAR}.json"
+SRQ_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/quali_{YEAR}.json"
+SRFP_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/session_results/fp_{YEAR}.json"
+DS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/driver_standings/{YEAR}.json"
+CS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/constructor_standings/{YEAR}_verify.json"
 
 
 with DAG(
@@ -36,7 +36,7 @@ with DAG(
         task_id="dbt_run_session_results",
         bash_command=(
             f"cd {DBT_PROJECT_DIR} && "
-            f"dbt run --select stg_session_results_race stg_driver_standings stg_session_results_qualifying stg_session_results_fp " 
+            f"dbt run --select stg_session_results_race stg_drivers stg_driver_standings stg_session_results_qualifying stg_session_results_fp " 
             f"--profiles-dir {DBT_PROFILES_DIR} "
         ),
     )

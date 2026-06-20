@@ -15,7 +15,7 @@ BASE_URL = os.getenv("BASE_URL", "").strip("/")
 YEAR = int(os.getenv("YEAR", ""))
 MEETING_URL = f"{BASE_URL}/meetings?year={YEAR}"
 SESSION_URL = f"{BASE_URL}/sessions?year={YEAR}"
-DRIVER_URL = f"{BASE_URL}/drivers?session_key=11253"
+DRIVER_URL = f"{BASE_URL}/drivers?session_key=9839"
 GCS_BUCKET = os.getenv("GCS_BUCKET")
 GCS_MEDAL_PUSH = os.getenv("GCS_MEDAL_PUSH")
 MEETINGS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/meetings/{YEAR}.parquet"

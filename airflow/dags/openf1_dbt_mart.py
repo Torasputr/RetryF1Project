@@ -12,8 +12,8 @@ DATASET = os.environ.get("DATASET").strip()
 MART_LOCATION = f"{PROJECT}.{DATASET}"
 GCS_PUSH_BUCKET = os.environ.get("GCS_PUSH_BUCKET").strip()
 YEAR = int(os.environ.get("YEAR"))
-SCHEDULE_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/schedule/{YEAR}_*.json"
-DRIVERS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/drivers/{YEAR}_*.json"
+SCHEDULE_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/schedule/{YEAR}_verify.json"
+# DRIVERS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/drivers/{YEAR}*.json"
 
 with DAG(
     dag_id="openf1_dbt_mart",
@@ -31,7 +31,7 @@ with DAG(
         task_id="dbt_run_marts",
         bash_command=(
             f"cd {DBT_PROJECT_DIR} && "
-            f"dbt run --select marts --profiles-dir {DBT_PROFILES_DIR}"
+            f"dbt run --select mart_schedule"
         ),
     )
 
@@ -43,12 +43,12 @@ with DAG(
         export_format="NEWLINE_DELIMITED_JSON",
     )
 
-    export_mart_drivers = BigQueryToGCSOperator(
-        task_id="export_mart_drivers_to_gcs",
-        gcp_conn_id="google_cloud_default",
-        source_project_dataset_table=f"{MART_LOCATION}.mart_drivers",
-        destination_cloud_storage_uris=[DRIVERS_DESTINATION],
-        export_format="NEWLINE_DELIMITED_JSON",
-    )
+    # export_mart_drivers = BigQueryToGCSOperator(
+    #     task_id="export_mart_drivers_to_gcs",
+    #     gcp_conn_id="google_cloud_default",
+    #     source_project_dataset_table=f"{MART_LOCATION}.mart_drivers",
+    #     destination_cloud_storage_uris=[DRIVERS_DESTINATION],
+    #     export_format="NEWLINE_DELIMITED_JSON",
+    # )
 
-    dbt_run_marts >> [export_mart_schedule, export_mart_drivers]
+    dbt_run_marts >> [export_mart_schedule]

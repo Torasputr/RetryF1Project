@@ -14,6 +14,6 @@ SELECT
     q2,
     q3,
     best_lap_time,
-    position,
+    position
 FROM {{ ref("stg_session_results_qualifying") }}
 ORDER BY session_key ASC, position ASC

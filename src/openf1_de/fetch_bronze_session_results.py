@@ -85,7 +85,7 @@ def main():
     #     seen_session_keys = set()
     
     frames = []
-    for s in df_used["session_key"]:
+    for s in df_used.loc[df_used["year"] == YEAR]["session_key"]:
         s = int(s)
         # if s in seen_session_keys:
         #     print(f"Skip cached session_key: {s}")
@@ -118,8 +118,8 @@ def main():
         tmp["ingested_at"] = pd.Timestamp.now(tz="UTC")
         frames.append(tmp)
 
-        seen_session_keys.add(s)
-        cache_path.write_text(json.dumps(sorted(seen_session_keys)))
+        # seen_session_keys.add(s)
+        # cache_path.write_text(json.dumps(sorted(seen_session_keys)))
 
     logger.info(f"Concatting the dataframes")
     df_sr = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
@@ -127,7 +127,7 @@ def main():
     logger.info(f"Merging df_sr with df_sessions")
     df_sr = pd.merge(left=df_sr, right=df_used, on="session_key", how="left")    
 
-    convert_to_string = ["duration"]
+    convert_to_string = ["duration", "gap_to_leader"]
     logger.info(f"Convert the {convert_to_string} columns into string")
     for col in convert_to_string:
         df_sr[col] = df_sr[col].astype(str)
