@@ -12,7 +12,7 @@ DATASET = os.environ.get("DATASET").strip()
 MART_LOCATION = f"{PROJECT}.{DATASET}"
 GCS_PUSH_BUCKET = os.environ.get("GCS_PUSH_BUCKET").strip()
 YEAR = int(os.environ.get("YEAR"))
-SCHEDULE_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/schedule/{YEAR}_verify.json"
+SCHEDULE_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/schedule/new_{YEAR}.json"
 # DRIVERS_DESTINATION = f"gs://{GCS_PUSH_BUCKET}/drivers/{YEAR}*.json"
 
 with DAG(

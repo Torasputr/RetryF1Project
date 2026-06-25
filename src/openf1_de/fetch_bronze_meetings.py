@@ -15,15 +15,15 @@ BASE_URL = os.getenv("BASE_URL", "").strip("/")
 YEAR = int(os.getenv("YEAR", ""))
 MEETING_URL = f"{BASE_URL}/meetings?year={YEAR}"
 SESSION_URL = f"{BASE_URL}/sessions?year={YEAR}"
-DRIVER_URL = f"{BASE_URL}/drivers?session_key=9839"
+# DRIVER_URL = f"{BASE_URL}/drivers?session_key=9839"
 GCS_BUCKET = os.getenv("GCS_BUCKET")
 GCS_MEDAL_PUSH = os.getenv("GCS_MEDAL_PUSH")
 MEETINGS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/meetings/{YEAR}.parquet"
 SESSIONS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/sessions/{YEAR}.parquet"
-DRIVERS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/drivers/{YEAR}.parquet"
+# DRIVERS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/drivers/{YEAR}.parquet"
 MEETINGS_DIR_PATH = f"../../data/bronze/meetings/{YEAR}.parquet"
 SESSIONS_DIR_PATH = f"../../data/bronze/sessions/{YEAR}.parquet"
-DRIVERS_DIR_PATH = f"../../data/bronze/drivers/{YEAR}.parquet"
+# DRIVERS_DIR_PATH = f"../../data/bronze/drivers/{YEAR}.parquet"
 
 
 def _configure_logging():
@@ -75,8 +75,8 @@ def main():
     meetings_df = fetch_data_from_api(MEETING_URL)
     logger.info(f"Fetching Sessions")
     sessions_df = fetch_data_from_api(SESSION_URL)
-    logger.info(f"Fetching Drivers")
-    drivers_df = fetch_data_from_api(DRIVER_URL)
+    # logger.info(f"Fetching Drivers")
+    # drivers_df = fetch_data_from_api(DRIVER_URL)
 
 
     logger.info(f"Init GCP Storage")
@@ -87,8 +87,8 @@ def main():
     upload_to_parquet(meetings_df, bucket, MEETINGS_BLOB_PATH, YEAR, MEETINGS_DIR_PATH)
     logger.info(f"Uploading sessions_df to GCP")
     upload_to_parquet(sessions_df, bucket, SESSIONS_BLOB_PATH, YEAR, SESSIONS_DIR_PATH)
-    logger.info(f"Uploading drivers_df to GCP")
-    upload_to_parquet(drivers_df, bucket, DRIVERS_BLOB_PATH, YEAR, DRIVERS_DIR_PATH)
+    # logger.info(f"Uploading drivers_df to GCP")
+    # upload_to_parquet(drivers_df, bucket, DRIVERS_BLOB_PATH, YEAR, DRIVERS_DIR_PATH)
 
 if __name__ == "__main__":
     main()

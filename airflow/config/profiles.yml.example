@@ -1,0 +1,15 @@
+# Copy to airflow/config/profiles.yml
+# Mounted in Docker at /opt/airflow/dbt/profiles.yml (see docker-compose.yaml).
+# Requires secrets/gcp-sa.json on the host.
+
+openf1_raw:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: trial-f1
+      dataset: openf1_staging
+      location: asia-southeast2
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS', '/opt/airflow/secrets/gcp-sa.json') }}"
+      threads: 4
