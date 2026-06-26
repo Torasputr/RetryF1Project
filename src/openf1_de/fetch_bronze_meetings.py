@@ -13,17 +13,12 @@ load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL", "").strip("/")
 YEAR = int(os.getenv("YEAR", ""))
-MEETING_URL = f"{BASE_URL}/meetings?year={YEAR}"
-SESSION_URL = f"{BASE_URL}/sessions?year={YEAR}"
-# DRIVER_URL = f"{BASE_URL}/drivers?session_key=9839"
 GCS_BUCKET = os.getenv("GCS_BUCKET")
 GCS_MEDAL_PUSH = os.getenv("GCS_MEDAL_PUSH")
 MEETINGS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/meetings/{YEAR}.parquet"
 SESSIONS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/sessions/{YEAR}.parquet"
-# DRIVERS_BLOB_PATH = f"{GCS_MEDAL_PUSH}/drivers/{YEAR}.parquet"
 MEETINGS_DIR_PATH = f"../../data/bronze/meetings/{YEAR}.parquet"
 SESSIONS_DIR_PATH = f"../../data/bronze/sessions/{YEAR}.parquet"
-# DRIVERS_DIR_PATH = f"../../data/bronze/drivers/{YEAR}.parquet"
 
 
 def _configure_logging():
@@ -40,12 +35,12 @@ def fetch_data_from_api(url):
         raw = resp.read().decode("UTF-8")
     data = json.loads(raw)
     df = pd.DataFrame(data)
-    logger.info(f"Adding timestamp column")
+    logger.info("Adding timestamp column")
     df["ingested_at"] = pd.Timestamp.utcnow()
     return df
 
 
-def upload_to_parquet(df, bucket, path, year, dir):
+def upload_to_parquet(df, bucket, path, year, local_path):
     if "year" not in df.columns:
         logger.info("Year does not exist, adding one")
         df["year"] = year
@@ -60,35 +55,31 @@ def upload_to_parquet(df, bucket, path, year, dir):
         content_type="application/vnd.apache.parquet",
         size=len(payload),
     )
-    
+
     try:
-        df.to_parquet(dir, index=False)
+        df.to_parquet(local_path, index=False)
     except Exception as e:
         logger.info(f"Without local save {e}")
 
 
-
 def main():
     _configure_logging()
-    logger.info(f"Start Fetching")
-    logger.info(f"Fetching Meetings")
-    meetings_df = fetch_data_from_api(MEETING_URL)
-    logger.info(f"Fetching Sessions")
-    sessions_df = fetch_data_from_api(SESSION_URL)
-    # logger.info(f"Fetching Drivers")
-    # drivers_df = fetch_data_from_api(DRIVER_URL)
+    logger.info(f"Fetching meetings and sessions for year {YEAR}")
 
+    meeting_url = f"{BASE_URL}/meetings?year={YEAR}"
+    session_url = f"{BASE_URL}/sessions?year={YEAR}"
 
-    logger.info(f"Init GCP Storage")
+    meetings_df = fetch_data_from_api(meeting_url)
+    sessions_df = fetch_data_from_api(session_url)
+
     client = storage.Client()
     bucket = client.bucket(GCS_BUCKET)
 
-    logger.info(f"Uploading meetings_df to GCP")
+    logger.info(f"Uploading meetings for {YEAR} to GCS")
     upload_to_parquet(meetings_df, bucket, MEETINGS_BLOB_PATH, YEAR, MEETINGS_DIR_PATH)
-    logger.info(f"Uploading sessions_df to GCP")
+    logger.info(f"Uploading sessions for {YEAR} to GCS")
     upload_to_parquet(sessions_df, bucket, SESSIONS_BLOB_PATH, YEAR, SESSIONS_DIR_PATH)
-    # logger.info(f"Uploading drivers_df to GCP")
-    # upload_to_parquet(drivers_df, bucket, DRIVERS_BLOB_PATH, YEAR, DRIVERS_DIR_PATH)
+
 
 if __name__ == "__main__":
     main()

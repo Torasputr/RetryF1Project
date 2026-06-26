@@ -139,7 +139,7 @@ def main():
     logger.info("Concatenating drivers")
     df_drivers = pd.concat(driver_frames, ignore_index=True) if driver_frames else pd.DataFrame()
     if not df_drivers.empty:
-        df_drivers = df_drivers.drop_duplicates(subset=["driver_number", "year"], keep="last")
+        df_drivers = df_drivers.drop_duplicates(subset=["driver_number"], keep="last")
 
     logger.info(f"Uploading session results to GCS: {SR_BLOB_PATH}")
     upload_to_gcs(df_sr, GCS_BUCKET, SR_BLOB_PATH, SR_LOCAL_PATH)

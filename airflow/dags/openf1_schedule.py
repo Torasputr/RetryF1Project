@@ -19,7 +19,7 @@ GCS_MEDAL_FETCH = os.environ["GCS_MEDAL_FETCH"]
 GCS_PUSH_BUCKET = os.environ["GCS_PUSH_BUCKET"].strip()
 BQ_RAW_DATASET = os.environ["BQ_RAW_DATASET"]
 YEAR = int(os.environ["YEAR"])
-YEARS = [str(YEAR)]
+YEARS = [y.strip() for y in os.environ.get("LOAD_YEARS", str(YEAR)).split(",") if y.strip()]
 
 MEETINGS_SOURCE = [f"{GCS_MEDAL_FETCH}/meetings/{y}.parquet" for y in YEARS]
 SESSIONS_SOURCE = [f"{GCS_MEDAL_FETCH}/sessions/{y}.parquet" for y in YEARS]
